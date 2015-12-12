@@ -14,7 +14,9 @@ module Frank
       verb = @request.request_method
       requested_path = @request.path_info
 
-      @routes[verb][requested_path].call
+      handler = @routes.fetch(verb, {}).fetch(requested_path, nil)
+
+      handler ? handler.call : invalid_path_response
     end
 
     def get(path, &handler)
@@ -30,6 +32,10 @@ module Frank
     def route(verb, path, &handler)
       @routes[verb] ||= {}
       @routes[verb][path] = handler
+    end
+
+    def invalid_path_response
+      [404, {}, ["Sorry, but the requested path is not valid"]]
     end
   end
 end
