@@ -16,7 +16,7 @@ module Frank
 
       handler = @routes.fetch(verb, {}).fetch(requested_path, nil)
 
-      handler ? handler.call : invalid_path_response
+      handler ? instance_eval(&handler) : invalid_path_response
     end
 
     def get(path, &handler)
